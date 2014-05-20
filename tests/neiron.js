@@ -93,7 +93,33 @@ describe('basic mechanics', function(){
 		reader.resetSignals();
 		
 		reader.sended.length.should.equal(0);
-		reader.gotted.length.should.equal(0);	
+		reader.gotted.length.should.equal(0);
+	});
+	
+	it('feedback should change link weight when result is positive', function(){
+		var sender = new Neiron();
+		var reader = new Neiron();
+		sender.linkTo(reader);
+		sender.signalTo(reader);
+		
+		reader.inputs[0].weight.getProbability().should.equal(0.5);
+		
+		reader.feedback(true);
+		
+		reader.inputs[0].weight.getProbability().should.equal(2/3);
+	});
+	
+	it('feedback should change link weight when result is negative', function(){
+		var sender = new Neiron();
+		var reader = new Neiron();
+		sender.linkTo(reader);
+		sender.signalTo(reader);
+		
+		reader.inputs[0].weight.getProbability().should.equal(0.5);
+		
+		reader.feedback(false);
+		
+		reader.inputs[0].weight.getProbability().should.equal(1/3);
 	});
 	
 	it('feedback should change probabilities', function(){
@@ -109,7 +135,7 @@ describe('basic mechanics', function(){
 		reader.resetSignals();
 		sender.signalTo(reader);
 		
-		reader._getPredictedProbability().should.equal(1/3);
+		reader._getPredictedProbability().should.equal(2/3);
 	});
 });
 	
