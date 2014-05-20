@@ -18,5 +18,10 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zarly/bayesian-neurons/issues"
+  },
+  "dependencies": {
+    "colors": "~0.6.2",
+    "mocha": "~1.19.0",
+    "should": "~3.3.1"
   }
 }
