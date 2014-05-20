@@ -1,0 +1,22 @@
+{
+  "name": "bayesian-neurons",
+  "version": "0.1.0",
+  "description": "Library for easy work with bayesian neurons",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zarly/bayesian-neurons.git"
+  },
+  "keywords": [
+    "neural",
+    "network"
+  ],
+  "author": "Alex Abramov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zarly/bayesian-neurons/issues"
+  }
+}
