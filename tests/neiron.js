@@ -51,7 +51,7 @@ describe('default values', function(){
 });
 	
 describe('basic mechanics', function(){
-	it('connect should add record to inputs and outputs', function(){
+	it('should add record to inputs and outputs', function(){
 		var sender = new Neiron();
 		var reader = new Neiron();
 		
@@ -73,12 +73,18 @@ describe('basic mechanics', function(){
 		var reader = new Neiron();
 		sender.linkTo(reader);
 				
+		sender.outputs[0].signal.should.be.false;
+		reader.inputs[0].signal.should.be.false;
+		
 		sender.sended.length.should.equal(0);
 		sender.gotted.length.should.equal(0);
 		reader.sended.length.should.equal(0);
 		reader.gotted.length.should.equal(0);		
 		
 		sender.signalTo(reader);
+		
+		sender.outputs[0].signal.should.be.true;
+		reader.inputs[0].signal.should.be.true;
 		
 		sender.sended.length.should.equal(1);
 		sender.gotted.length.should.equal(0);
@@ -89,24 +95,30 @@ describe('basic mechanics', function(){
 				
 		sender.sended.length.should.equal(0);
 		sender.gotted.length.should.equal(0);
+				
+		sender.outputs[0].signal.should.be.true;
 		
 		reader.resetSignals();
 		
 		reader.sended.length.should.equal(0);
 		reader.gotted.length.should.equal(0);
+		
+		reader.inputs[0].signal.should.be.false;
 	});
 	
-	it('feedback should change link weight when result is positive', function(){
+	it('should change link weight when result is positive', function(){
 		var sender = new Neiron();
 		var reader = new Neiron();
 		sender.linkTo(reader);
 		sender.signalTo(reader);
 		
-		reader.inputs[0].weight.getProbability().should.equal(0.5);
+		reader.inputs[0].conditionalProbability.getProbability().should.equal(0.5);
+		reader.inputs[0].unconditionalProbability.getProbability().should.equal(0.5);
 		
 		reader.feedback(true);
 		
-		reader.inputs[0].weight.getProbability().should.equal(2/3);
+		reader.inputs[0].conditionalProbability.getProbability().should.equal(2/3);
+		reader.inputs[0].unconditionalProbability.getProbability().should.equal(2/3);
 	});
 	
 	it('feedback should change link weight when result is negative', function(){
@@ -115,11 +127,28 @@ describe('basic mechanics', function(){
 		sender.linkTo(reader);
 		sender.signalTo(reader);
 		
-		reader.inputs[0].weight.getProbability().should.equal(0.5);
+		reader.inputs[0].conditionalProbability.getProbability().should.equal(0.5);
+		reader.inputs[0].unconditionalProbability.getProbability().should.equal(0.5);
 		
 		reader.feedback(false);
 		
-		reader.inputs[0].weight.getProbability().should.equal(1/3);
+		reader.inputs[0].conditionalProbability.getProbability().should.equal(0.5);
+		reader.inputs[0].unconditionalProbability.getProbability().should.equal(2/3);
+	});
+	
+	it('feedback should change inputs probability', function(){
+		var sender = new Neiron();
+		var reader = new Neiron();
+		sender.linkTo(reader);
+		sender.signalTo(reader);
+		
+		reader._getTotalConditionalInputsProbability().should.equal(0.25);
+		reader._getTotalUnconditionalInputsProbability().should.equal(0.25);
+		
+		reader.feedback(true);
+		
+		reader._getTotalConditionalInputsProbability().should.equal(1/3);
+		reader._getTotalUnconditionalInputsProbability().should.equal(1/3);
 	});
 	
 	it('feedback should change probabilities', function(){
