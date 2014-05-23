@@ -151,6 +151,19 @@ describe('basic mechanics', function(){
 		reader._getTotalUnconditionalInputsProbability().should.equal(1/3);
 	});
 	
+	it('feedback should change own probability', function(){
+		var sender = new Neiron();
+		var reader = new Neiron();
+		sender.linkTo(reader);
+		sender.signalTo(reader);
+		
+		reader._getHistoricalSpikeProbability().should.equal(0.5);
+		
+		reader.feedback(true);
+		
+		reader._getHistoricalSpikeProbability().should.equal(2/3);
+	});
+	
 	it('feedback should change probabilities', function(){
 		var sender = new Neiron();
 		var reader = new Neiron();
