@@ -3,9 +3,9 @@ Bayesian neurons
 
 Simple and stabile library for dealing with bayesian neurons.
 
-##Usage##
+==Usage:==
 
-	var Neiron = require('bayesian-neurons').Neiron;
+var Neiron = require('bayesian-neurons').Neiron;
 
 var enter = new Neiron();
 var neiron1 = new Neiron();
