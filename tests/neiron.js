@@ -179,6 +179,60 @@ describe('basic mechanics', function(){
 		
 		reader._getPredictedProbability().should.equal(2/3);
 	});
+	
+	describe('unconditionalSpike', function () {
+		it('should spike', function () {
+			var sender = new Neiron();
+			var reader = new Neiron();
+			sender.linkTo(reader);
+			
+			reader.inputs[0].signal.should.be.false;
+			
+			sender.unconditionalSpike();
+			
+			reader.inputs[0].signal.should.be.true;
+		});
+		
+		it('should spike even after negative feedback', function () {
+			var sender = new Neiron();
+			var reader = new Neiron();
+			sender.linkTo(reader);
+			
+			reader.inputs[0].signal.should.be.false;
+			
+			sender.feedback(false);
+			sender.unconditionalSpike();
+			
+			reader.inputs[0].signal.should.be.true;
+		});
+	});
+	
+	describe('handle', function () {
+		it('should spike when allowed', function () {
+			var sender = new Neiron();
+			var reader = new Neiron();
+			sender.linkTo(reader);
+			
+			reader.inputs[0].signal.should.be.false;
+			
+			sender.handle();
+			
+			reader.inputs[0].signal.should.be.true;
+		});
+		
+		it('should not spike when not allowed', function () {
+			var sender = new Neiron();
+			var reader = new Neiron();
+			sender.linkTo(reader);
+			
+			reader.inputs[0].signal.should.be.false;
+			
+			sender.feedback(false);
+			sender.handle();
+			
+			reader.inputs[0].signal.should.be.false;
+		});
+	});
 });
 	
 describe('logical verification tests', function(){
@@ -193,17 +247,60 @@ describe('logical verification tests', function(){
 		neiron.signalTo(enter);
 		neiron.isShouldSpike().should.be.false;
 	});
-	/*
-	it('should be not ready for strike after bed experience', function(){
+	
+	it('should be still ready for strike after good experience', function(){
 		var enter = new Neiron();
 		var neiron = new Neiron();
-		neiron.connect(enter);
-		neiron.signal(enter);
+		neiron.linkTo(enter);
+		neiron.signalTo(enter);
+		neiron.handle();
+		neiron.feedback(true);
+		neiron.resetSignals();
+		neiron.signalTo(enter);
+		neiron.isShouldSpike().should.be.true;
+	});
+	
+	it('should be not ready for strike after bed experience and no signal', function(){
+		var enter = new Neiron();
+		var neiron = new Neiron();
+		neiron.linkTo(enter);
 		neiron.handle();
 		neiron.feedback(false);
 		neiron.resetSignals();
-		neiron.signal(enter);
 		neiron.isShouldSpike().should.be.false;
 	});
-	*/
+	
+	it('should be ready for strike after bad experience and no signal', function(){
+		var enter = new Neiron();
+		var neiron = new Neiron();
+		neiron.linkTo(enter);
+		neiron.handle();
+		neiron.feedback(true);
+		neiron.resetSignals();
+		neiron.isShouldSpike().should.be.true;
+	});
+	
+	it('chain of neuron should set correct probabilities after feedbacks', function () {
+		var sender = new Neiron();
+		var reader = new Neiron();
+		sender.linkTo(reader);
+		
+		sender._getHistoricalSpikeProbability().should.equal(0.5);
+		sender._getPredictedProbability().should.equal(0.5);
+		
+		reader.feedback(false);
+		
+		sender._getHistoricalSpikeProbability().should.equal(1/3);
+		sender._getPredictedProbability().should.equal(1/3);
+		
+		reader.feedback(true);
+		
+		sender._getHistoricalSpikeProbability().should.equal(2/4);
+		sender._getPredictedProbability().should.equal(2/4);
+		
+		reader.feedback(false);
+		
+		sender._getHistoricalSpikeProbability().should.equal(2/5);
+		sender._getPredictedProbability().should.equal(2/5);
+	});
 });
