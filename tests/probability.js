@@ -17,10 +17,13 @@ it('should return correct probability', function(){
 	probability.incPos();
 	probability.incPos();
 	probability.incNeg();
+	probability.updateWeights();
 	probability.getProbability().should.equal(0.6);
 	probability.reset();
+	probability.updateWeights();
 	probability.getProbability().should.equal(0.5);
 	probability.incNeg();
 	probability.incNeg();
+	probability.updateWeights();
 	probability.getProbability().should.equal(0.25);
 });

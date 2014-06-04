@@ -116,6 +116,8 @@ describe('basic mechanics', function(){
 		reader.inputs[0].unconditionalProbability.getProbability().should.equal(0.5);
 		
 		reader.feedback(true);
+		reader.resetSignals();
+		sender.signalTo(reader);
 		
 		reader.inputs[0].conditionalProbability.getProbability().should.equal(2/3);
 		reader.inputs[0].unconditionalProbability.getProbability().should.equal(2/3);
@@ -131,6 +133,8 @@ describe('basic mechanics', function(){
 		reader.inputs[0].unconditionalProbability.getProbability().should.equal(0.5);
 		
 		reader.feedback(false);
+		reader.resetSignals();
+		sender.signalTo(reader);
 		
 		reader.inputs[0].conditionalProbability.getProbability().should.equal(0.5);
 		reader.inputs[0].unconditionalProbability.getProbability().should.equal(2/3);
@@ -146,6 +150,8 @@ describe('basic mechanics', function(){
 		reader._getTotalUnconditionalInputsProbability().should.equal(0.25);
 		
 		reader.feedback(true);
+		reader.resetSignals();
+		sender.signalTo(reader);
 		
 		reader._getTotalConditionalInputsProbability().should.equal(1/3);
 		reader._getTotalUnconditionalInputsProbability().should.equal(1/3);
@@ -160,6 +166,8 @@ describe('basic mechanics', function(){
 		reader._getHistoricalSpikeProbability().should.equal(0.5);
 		
 		reader.feedback(true);
+		reader.resetSignals();
+		sender.signalTo(reader);
 		
 		reader._getHistoricalSpikeProbability().should.equal(2/3);
 	});
@@ -228,6 +236,7 @@ describe('basic mechanics', function(){
 			reader.inputs[0].signal.should.be.false;
 			
 			sender.feedback(false);
+			sender.resetSignals();
 			sender.handle();
 			
 			reader.inputs[0].signal.should.be.false;
@@ -289,16 +298,22 @@ describe('logical verification tests', function(){
 		sender._getPredictedProbability().should.equal(0.5);
 		
 		reader.feedback(false);
+		reader.updateWeights();
+		sender.updateWeights();
 		
 		sender._getHistoricalSpikeProbability().should.equal(1/3);
 		sender._getPredictedProbability().should.equal(1/3);
 		
 		reader.feedback(true);
+		reader.updateWeights();
+		sender.updateWeights();
 		
 		sender._getHistoricalSpikeProbability().should.equal(2/4);
 		sender._getPredictedProbability().should.equal(2/4);
 		
 		reader.feedback(false);
+		reader.updateWeights();
+		sender.updateWeights();
 		
 		sender._getHistoricalSpikeProbability().should.equal(2/5);
 		sender._getPredictedProbability().should.equal(2/5);
